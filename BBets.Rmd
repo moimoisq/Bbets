@@ -1,0 +1,139 @@
+---
+title: "Brownlows Bets"
+author: "Moises Sales"
+date: "10/16/2019"
+output: html_document: default
+ ---
+
+<!-- We recommend you use git branches -- create a separate branch for each major section i.e. Introduction, Methods, Results, Inferential Results, and Discussion and Conclusions - leave the YAML block untouched until the final merge where you put in your own name !-->
+
+# Introduction
+
+<!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?!-->
+
+ At the first day of class there are 35 students in Math Statistics class and professor Brownlow always proposes this bet to his students "I will wager $2 to your bet of $1 that at least two people in today's class have  the same birthday.  He tells me he has made that bet 1137 times so far. Where do you think his profits are? Discuss this in a markdown document
+
+# Methods
+
+<!--Decide on your methods:  In this section explain the approach you will take to attack the issue --- how will you decide on a likely estimate of professor Brownlow's earnings or losses after 1137 bets. Also explain how you construct a 95% confidence interval about your estimate of his winnings !-->
+
+To estimate professor Brownlow's earnings or losses after 1137 bets, the data sample gathered from the bets will be compiled by first setting a new object for birthdays (BDAYS) which will contain each possible day of the year from an interval 1:365. Then using our (BDAYS) object we will compare the sample tests of each bet results to whether or not they obtained a unique sample number < 35 which is the total number of birthdays per bet. After all 1,137 bets there will be a total amount of money for the bets either in positive or negative money total due to earnings or loses. This data will be shown as a 95% confidence interval over a histogram
+
+# Profit Estimate
+
+<!--Explain and display the results of your method of coming up with the estimate of professor Brownlows betting!-->
+
+```{r}
+Bdays = 1:365
+Bsamples = vector("numeric")
+TotalDollars = 0
+saveDollars = vector("numeric")
+
+```
+
+run the simulation 1137 times.
+
+
+```{r}
+for (loop in 1:1000) {
+
+TotalDollars = 0
+classsize = 35
+for(i in 1:1137) {
+Bsamples = sample(Bdays,35, replace=TRUE)
+if (length(unique(Bsamples)) == 35) {
+   TotalDollars = TotalDollars -2
+} else{
+  TotalDollars = TotalDollars +1
+}
+}  
+
+saveDollars[loop] = TotalDollars
+}
+
+hist(saveDollars)
+var(saveDollars)
+print(paste("average return =",mean(saveDollars)))
+
+```
+
+Using resampling, I found the average amount of dollars made per test was around $502.
+
+# Confidence interval of Brownlows earning
+
+<!--Explain and display your method of coming up with a 95% confidence interval of  professor Brownlows-->
+
+```{r}
+varSorted = sort(saveDollars)
+LCL = varSorted[25]
+UCL = varSorted[975]
+print(paste("UCL = ",UCL,"LCL = ",LCL))
+```
+
+0
+```{r}
+stdevDollars = sd(saveDollars)
+meandDollars = mean(saveDollars)
+CI = c(meandDollars-2*stdevDollars, meandDollars+2*stdevDollars)
+
+print(CI)
+```
+
+
+
+# Discussion and Conclusion
+
+<!--Discussion and conclusion here.  If professor Brownlow is consistantly making or losing money how could he change his payout so that his profits center on zero?  Also discuss what size his class should be in order to have his current scheme balance at zero profit.!-->
+
+```{r}
+for (loop in 1:1000) {
+
+TotalDollars = 0
+classsize = 35 
+for(i in 1:1137) {
+Bsamples = sample(Bdays,35, replace=TRUE)
+if (length(unique(Bsamples)) == 35) {
+   TotalDollars = TotalDollars -4.4
+} else{
+  TotalDollars = TotalDollars +1
+}
+}  
+
+saveDollars[loop] = TotalDollars
+}
+
+hist(saveDollars)
+var(saveDollars)
+print(paste("average return =",mean(saveDollars)))
+
+```
+
+At the original class size of 35, brownlow ends up with a zero profit at around $4.40. Originally this was tested with $3 and $5 to where I gradually got more into the average that I found to be at $4.40 as it breaks at around a 1 dollar gain to a 1 dollar loss.
+
+```{r}
+for (loop in 1:1000) {
+
+TotalDollars = 0
+classsize = 28 
+for(i in 1:1137) {
+Bsamples = sample(Bdays,28, replace=TRUE)
+if (length(unique(Bsamples)) == 28) {
+   TotalDollars = TotalDollars -2
+} else{
+  TotalDollars = TotalDollars +1
+}
+}  
+
+saveDollars[loop] = TotalDollars
+}
+
+hist(saveDollars)
+var(saveDollars)
+print(paste("average return =",mean(saveDollars)))
+
+```
+
+
+
+
+At around a class size of 28 or 29 the payout is around a zero profit. originally we looked at taking 15 students which was to much and then 30 students which was still in a higher negative of around -$134 dollars. Then gradually going down it turns out that the number is somewhere roughly between 28 to 29 students but you can't have half a student so the number falls between 28-29 students.
